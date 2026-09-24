@@ -6,6 +6,7 @@ import { ElderlyProfile } from '../models/ElderlyProfile.js';
 import { DOSE_STATUSES, DOSE_ACTIONS } from '../constants/doseStatuses.js';
 import { getDayBoundsUtc } from '../utils/timezoneUtils.js';
 import { reconcileDoses } from './reconciliationService.js';
+import { sendLowStockAlert } from './notificationService.js';
 import { AppError } from '../utils/appError.js';
 import { ERROR_CODES } from '../constants/errorCodes.js';
 
@@ -36,6 +37,11 @@ export const recordDoseAction = async (doseId, action, options = {}, actedBy) =>
       const pillsToDeduct = medication.pillsPerDose || 1;
       medication.currentStock = Math.max(0, medication.currentStock - pillsToDeduct);
       await medication.save();
+
+      // If stock reached or fell below refill threshold, notify caregivers
+      if (medication.currentStock <= medication.refillThreshold) {
+        sendLowStockAlert(medication).catch(() => {});
+      }
       break;
     }
 

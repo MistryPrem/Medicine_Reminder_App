@@ -1,6 +1,7 @@
 import { MedicationDose } from '../models/MedicationDose.js';
 import { DOSE_STATUSES } from '../constants/doseStatuses.js';
 import { generateDosesForActiveSchedules } from './doseGeneratorService.js';
+import { sendDoseReminder, sendMissedDoseEscalation } from './notificationService.js';
 import { logger } from '../utils/logger.js';
 
 export const reconcileDoses = async () => {
@@ -21,6 +22,11 @@ export const reconcileDoses = async () => {
       dose.statusUpdatedAt = now;
       await dose.save();
       remindersTriggered++;
+
+      // Dispatch high-priority reminder push to the senior
+      sendDoseReminder(dose).catch((err) => {
+        logger.error('Failed to dispatch dose reminder push', { doseId: dose._id, error: err.message });
+      });
     }
 
     // 2. Transition unconfirmed doses that passed their overdueThresholdAt to 'missed'
@@ -36,6 +42,11 @@ export const reconcileDoses = async () => {
       dose.statusUpdatedAt = now;
       await dose.save();
       dosesMarkedMissed++;
+
+      // Escalate to linked caregivers
+      sendMissedDoseEscalation(dose).catch((err) => {
+        logger.error('Failed to dispatch missed dose escalation push', { doseId: dose._id, error: err.message });
+      });
     }
 
     // 3. Ensure upcoming doses exist for the next 48 hours
