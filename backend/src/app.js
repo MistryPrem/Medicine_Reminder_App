@@ -13,6 +13,7 @@ import medicationRoutes from './routes/medicationRoutes.js';
 import doseRoutes from './routes/doseRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 
 const app = express();
 
@@ -68,6 +69,9 @@ app.use('/api/v1/jobs', jobRoutes);
 
 // Notification Routes
 app.use('/api/v1/notifications', notificationRoutes);
+
+// Adherence Analytics Routes
+app.use('/api/v1/analytics', analyticsRoutes);
 
 // Base API route placeholder
 app.get('/api/v1', (req, res) => {
