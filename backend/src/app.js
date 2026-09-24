@@ -7,6 +7,8 @@ import { apiRateLimiter } from './middleware/rateLimiter.js';
 import { notFoundHandler, errorHandler } from './middleware/errorMiddleware.js';
 import healthRoutes from './routes/healthRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import caregiverRoutes from './routes/caregiverRoutes.js';
+import elderlyRoutes from './routes/elderlyRoutes.js';
 
 const app = express();
 
@@ -46,6 +48,10 @@ app.use('/', healthRoutes);
 
 // Authentication Routes
 app.use('/api/v1/auth', authRoutes);
+
+// Caregiver & Elderly Relationship Routes
+app.use('/api/v1/caregivers', caregiverRoutes);
+app.use('/api/v1/elderly', elderlyRoutes);
 
 // Base API route placeholder
 app.get('/api/v1', (req, res) => {
