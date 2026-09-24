@@ -1,0 +1,21 @@
+{
+  "name": "elderly-medicine-reminder-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-quality Elderly Medicine Reminder & Caregiver Notification System",
+  "scripts": {
+    "lint:backend": "npm --prefix backend run lint",
+    "lint:web": "npm --prefix web run lint",
+    "test:backend": "npm --prefix backend test",
+    "test:web": "npm --prefix web test"
+  },
+  "keywords": [
+    "medicine-reminder",
+    "elderly-care",
+    "caregiver",
+    "fcm-notifications",
+    "accessibility"
+  ],
+  "author": "",
+  "license": "ISC"
+}
