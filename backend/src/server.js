@@ -2,6 +2,7 @@ import app from './app.js';
 import { env } from './config/env.js';
 import { connectDatabase, disconnectDatabase } from './config/database.js';
 import { logger } from './utils/logger.js';
+import { reconcileDoses } from './services/reconciliationService.js';
 
 let server;
 
@@ -9,6 +10,11 @@ const startServer = async () => {
   try {
     // Attempt database connection
     await connectDatabase();
+
+    // Run startup dose reconciliation in background
+    reconcileDoses().catch((err) => {
+      logger.error('Startup dose reconciliation warning', { error: err.message });
+    });
 
     server = app.listen(env.PORT, () => {
       logger.info(`Elderly Medicine Reminder API running on port ${env.PORT} [${env.NODE_ENV}]`);

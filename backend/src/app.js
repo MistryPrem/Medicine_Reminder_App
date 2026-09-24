@@ -10,6 +10,8 @@ import authRoutes from './routes/authRoutes.js';
 import caregiverRoutes from './routes/caregiverRoutes.js';
 import elderlyRoutes from './routes/elderlyRoutes.js';
 import medicationRoutes from './routes/medicationRoutes.js';
+import doseRoutes from './routes/doseRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
 
 const app = express();
 
@@ -56,6 +58,12 @@ app.use('/api/v1/elderly', elderlyRoutes);
 
 // Medication Management Routes
 app.use('/api/v1/medications', medicationRoutes);
+
+// Dose Execution & Tracking Routes
+app.use('/api/v1/doses', doseRoutes);
+
+// External Job Heartbeat & Reconciliation Routes
+app.use('/api/v1/jobs', jobRoutes);
 
 // Base API route placeholder
 app.get('/api/v1', (req, res) => {
