@@ -1,0 +1,67 @@
+export const THEME = {
+  colors: {
+    background: '#090d16',
+    surface: '#172033',
+    surfaceElevated: '#243049',
+    border: '#334155',
+    textPrimary: '#ffffff',
+    textSecondary: '#cbd5e1',
+    textMuted: '#94a3b8',
+    textDark: '#0f172a',
+    textLight: '#ffffff',
+    primary: '#38bdf8',
+    primaryHover: '#0284c7',
+    primaryLight: '#0369a1',
+    success: '#10b981',
+    warning: '#f59e0b',
+    danger: '#ef4444',
+    purple: '#8b5cf6',
+  },
+  typography: {
+    sizes: {
+      xs: 12,
+      sm: 14,
+      md: 16,
+      lg: 18,
+      xl: 22,
+      xxl: 28,
+      display: 34,
+    },
+    weights: {
+      regular: '400' as const,
+      medium: '500' as const,
+      semibold: '600' as const,
+      bold: '700' as const,
+    },
+    // Backwards compatibility shortcuts
+    small: 14,
+    regular: 16,
+    medium: 18,
+    large: 22,
+    extraLarge: 28,
+    display: 34,
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+  },
+  radius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    full: 9999,
+  },
+  borderRadius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    full: 9999,
+  },
+  touchTarget: {
+    minHeight: 64, // 64dp high-contrast touch target for elderly accessibility
+    minWidth: 64,
+  },
+};
