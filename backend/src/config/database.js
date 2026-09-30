@@ -1,6 +1,14 @@
+import dns from 'dns';
 import mongoose from 'mongoose';
 import { env } from './env.js';
 import { logger } from '../utils/logger.js';
+
+// Configure DNS servers to avoid local ISP/router ECONNREFUSED on MongoDB Atlas SRV lookups
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  logger.warn('Could not set custom DNS servers, using system default', { error: e.message });
+}
 
 const MONGO_OPTIONS = {
   maxPoolSize: 10, // Optimized for MongoDB Atlas M0 free tier (500 connections limit)
