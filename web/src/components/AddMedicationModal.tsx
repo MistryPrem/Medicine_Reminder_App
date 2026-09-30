@@ -37,6 +37,10 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
   const [pillsPerDose, setPillsPerDose] = useState(1);
   const [frequencyType, setFrequencyType] = useState<FrequencyType>('once_daily');
   const [scheduledTimes, setScheduledTimes] = useState<string[]>(['08:00']);
+  const [alarmSound, setAlarmSound] = useState<'chime' | 'gentle_bell' | 'radar' | 'digital_alarm' | 'melody' | 'soft_harp'>('chime');
+  const [alarmVolume, setAlarmVolume] = useState<number>(80);
+  const [vibrate, setVibrate] = useState<boolean>(true);
+  const [isAlarmEnabled, setIsAlarmEnabled] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,7 +85,11 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
         pillsPerDose: Number(pillsPerDose),
         schedule: {
           frequencyType,
-          scheduledTimes
+          scheduledTimes,
+          alarmSound,
+          alarmVolume,
+          vibrate,
+          isAlarmEnabled
         }
       });
       onClose();
@@ -239,6 +247,53 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
                 <Plus size={16} /> Add Another Dose Time
               </button>
             </div>
+          </div>
+
+          <div className="form-row" style={{ marginTop: '16px' }}>
+            <div className="form-group">
+              <label>Alarm Sound</label>
+              <select
+                value={alarmSound}
+                onChange={(e) => setAlarmSound(e.target.value as any)}
+              >
+                <option value="chime">Chime (Gentle)</option>
+                <option value="gentle_bell">Gentle Bell</option>
+                <option value="radar">Radar (Urgent)</option>
+                <option value="digital_alarm">Digital Alarm</option>
+                <option value="melody">Melody</option>
+                <option value="soft_harp">Soft Harp</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Sound Volume ({alarmVolume}%)</label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={alarmVolume}
+                onChange={(e) => setAlarmVolume(Number(e.target.value))}
+                style={{ width: '100%', marginTop: '8px' }}
+              />
+            </div>
+          </div>
+
+          <div className="form-row" style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '16px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
+              <input
+                type="checkbox"
+                checked={vibrate}
+                onChange={(e) => setVibrate(e.target.checked)}
+              />
+              <span>Vibrate on Alarm</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
+              <input
+                type="checkbox"
+                checked={isAlarmEnabled}
+                onChange={(e) => setIsAlarmEnabled(e.target.checked)}
+              />
+              <span>Enable Auditory Alarm</span>
+            </label>
           </div>
 
           <div className="modal-actions">

@@ -126,10 +126,12 @@ export const ElderlyHomeScreen: React.FC = () => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         ListHeaderComponent={
           <>
-            <EmergencyBanner
-              caregiverName={caregiverName}
-              caregiverPhone={caregiverPhone}
-            />
+            {caregiverPhone && (
+              <EmergencyBanner
+                caregiverName={caregiverName}
+                caregiverPhone={caregiverPhone}
+              />
+            )}
 
             <OfflineSyncBanner
               pendingCount={pendingSyncCount}
@@ -137,7 +139,9 @@ export const ElderlyHomeScreen: React.FC = () => {
               onSyncPress={handleManualSync}
             />
 
-            <Text style={styles.sectionTitle}>Today's Medication Doses</Text>
+            <Text style={styles.sectionTitle}>
+              {user?.role === 'individual' ? "My Daily Medication & Alarms" : "Today's Medication Doses"}
+            </Text>
           </>
         }
         renderItem={({ item }) => (

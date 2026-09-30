@@ -30,6 +30,10 @@ export interface MedicationDose {
   statusUpdatedAt?: string;
   takenAt?: string;
   pillsPerDose?: number;
+  alarmSound?: string;
+  alarmVolume?: number;
+  vibrate?: boolean;
+  isAlarmEnabled?: boolean;
 }
 
 export type MobileDoseItem = MedicationDose;

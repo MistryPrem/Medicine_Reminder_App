@@ -60,6 +60,11 @@ export const DoseCard: React.FC<DoseCardProps> = ({ dose, onAction, disabled = f
           {dose.dosageUnit || dose.medicationId?.dosageUnit || ''}
           {dose.instructions || dose.medicationId?.instructions ? ` • ${dose.instructions || dose.medicationId?.instructions}` : ''}
         </Text>
+        {dose.alarmSound && (
+          <View style={styles.alarmBadge}>
+            <Text style={styles.alarmBadgeText}>🔔 Alarm: {dose.alarmSound.replace('_', ' ')}</Text>
+          </View>
+        )}
       </View>
 
       {isScheduled && (
@@ -178,6 +183,20 @@ const styles = StyleSheet.create({
     fontSize: THEME.typography.sizes.md,
     color: THEME.colors.textSecondary,
     marginTop: 4,
+  },
+  alarmBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(56, 189, 248, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginTop: 6,
+  },
+  alarmBadgeText: {
+    color: THEME.colors.primary,
+    fontSize: THEME.typography.sizes.xs,
+    fontWeight: THEME.typography.weights.semibold,
+    textTransform: 'capitalize',
   },
   actionsContainer: {
     marginTop: THEME.spacing.md,

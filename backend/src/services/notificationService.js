@@ -3,6 +3,7 @@ import { DeviceToken } from '../models/DeviceToken.js';
 import { CaregiverRelationship } from '../models/CaregiverRelationship.js';
 import { User } from '../models/User.js';
 import { Medication } from '../models/Medication.js';
+import { MedicationSchedule } from '../models/MedicationSchedule.js';
 import { dispatchPushNotification } from '../notifications/notificationDispatcher.js';
 import { logger } from '../utils/logger.js';
 
@@ -37,6 +38,19 @@ export const sendDoseReminder = async (dose) => {
   const medication = await Medication.findById(dose.medicationId);
   if (!medication) return null;
 
+  // Retrieve schedule to include alarm sound and vibration settings if scheduleId present
+  let alarmSound = 'chime';
+  let vibrate = true;
+  let isAlarmEnabled = true;
+  if (dose.scheduleId) {
+    const schedule = await MedicationSchedule.findById(dose.scheduleId).lean();
+    if (schedule) {
+      alarmSound = schedule.alarmSound || 'chime';
+      vibrate = schedule.vibrate !== false;
+      isAlarmEnabled = schedule.isAlarmEnabled !== false;
+    }
+  }
+
   const title = 'Time for your medication';
   const body = `Take ${medication.dosage} ${medication.dosageUnit} of ${medication.name}`;
 
@@ -47,11 +61,17 @@ export const sendDoseReminder = async (dose) => {
   const payload = {
     title,
     body,
+    alarmSound,
+    vibrate,
+    isAlarmEnabled,
     data: {
       type: 'MEDICATION_REMINDER',
       doseId: dose._id.toString(),
       medicationId: medication._id.toString(),
-      medicationName: medication.name
+      medicationName: medication.name,
+      alarmSound,
+      vibrate: String(vibrate),
+      isAlarmEnabled: String(isAlarmEnabled)
     }
   };
 

@@ -30,6 +30,10 @@ export interface MedicationSchedule {
   startDate: string;
   endDate?: string | null;
   timezone: string;
+  alarmSound?: 'chime' | 'gentle_bell' | 'radar' | 'digital_alarm' | 'melody' | 'soft_harp';
+  alarmVolume?: number;
+  vibrate?: boolean;
+  isAlarmEnabled?: boolean;
   isActive: boolean;
 }
 
@@ -94,5 +98,9 @@ export interface CreateMedicationPayload {
     startDate?: string;
     endDate?: string | null;
     timezone?: string;
+    alarmSound?: 'chime' | 'gentle_bell' | 'radar' | 'digital_alarm' | 'melody' | 'soft_harp';
+    alarmVolume?: number;
+    vibrate?: boolean;
+    isAlarmEnabled?: boolean;
   };
 }

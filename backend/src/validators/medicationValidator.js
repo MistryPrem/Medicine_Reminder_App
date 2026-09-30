@@ -25,7 +25,11 @@ export const createMedicationSchema = z.object({
       intervalHours: z.number().int().min(1).max(48).optional(),
       startDate: z.string().datetime().or(z.string().date()).optional(),
       endDate: z.string().datetime().or(z.string().date()).nullable().optional(),
-      timezone: z.string().optional()
+      timezone: z.string().optional(),
+      alarmSound: z.enum(['chime', 'gentle_bell', 'radar', 'digital_alarm', 'melody', 'soft_harp']).optional(),
+      alarmVolume: z.number().min(0).max(100).optional(),
+      vibrate: z.boolean().optional(),
+      isAlarmEnabled: z.boolean().optional()
     })
   })
 });
@@ -52,7 +56,11 @@ export const updateMedicationSchema = z.object({
         intervalHours: z.number().int().min(1).max(48).optional(),
         startDate: z.string().datetime().or(z.string().date()).optional(),
         endDate: z.string().datetime().or(z.string().date()).nullable().optional(),
-        timezone: z.string().optional()
+        timezone: z.string().optional(),
+        alarmSound: z.enum(['chime', 'gentle_bell', 'radar', 'digital_alarm', 'melody', 'soft_harp']).optional(),
+        alarmVolume: z.number().min(0).max(100).optional(),
+        vibrate: z.boolean().optional(),
+        isAlarmEnabled: z.boolean().optional()
       })
       .optional()
   })

@@ -1,6 +1,7 @@
 export const ROLES = {
   ELDERLY: 'elderly',
   CAREGIVER: 'caregiver',
+  INDIVIDUAL: 'individual',
   ADMIN: 'admin'
 };
 

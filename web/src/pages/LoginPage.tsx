@@ -21,6 +21,8 @@ export const LoginPage: React.FC = () => {
       const user = await login({ email, password });
       if (user.role === 'elderly') {
         navigate('/elderly-portal');
+      } else if (user.role === 'individual') {
+        navigate('/personal-reminders');
       } else {
         navigate('/dashboard');
       }

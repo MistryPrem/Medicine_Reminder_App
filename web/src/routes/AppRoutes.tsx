@@ -5,6 +5,7 @@ import { RegisterPage } from '../pages/RegisterPage';
 import { CaregiverDashboardPage } from '../pages/CaregiverDashboardPage';
 import { MedicationManagementPage } from '../pages/MedicationManagementPage';
 import { ElderlyPortalPage } from '../pages/ElderlyPortalPage';
+import { PersonalRemindersPage } from '../pages/PersonalRemindersPage';
 import { ProtectedRoute } from './ProtectedRoute';
 import { useAuth } from '../hooks/useAuth';
 
@@ -46,7 +47,16 @@ export const AppRoutes: React.FC = () => {
       {/* Caregiver Protected Routes */}
       <Route element={<ProtectedRoute allowedRoles={['caregiver', 'admin']} />}>
         <Route path="/dashboard" element={<CaregiverDashboardPage />} />
+      </Route>
+
+      {/* Medication Management (Caregivers, Individuals, Admins) */}
+      <Route element={<ProtectedRoute allowedRoles={['caregiver', 'individual', 'admin']} />}>
         <Route path="/medications" element={<MedicationManagementPage />} />
+      </Route>
+
+      {/* Independent Adult Personal Reminders */}
+      <Route element={<ProtectedRoute allowedRoles={['individual', 'admin']} />}>
+        <Route path="/personal-reminders" element={<PersonalRemindersPage />} />
       </Route>
 
       {/* Senior Protected Routes */}
@@ -62,6 +72,8 @@ export const AppRoutes: React.FC = () => {
             <Navigate to="/login" replace />
           ) : user.role === 'elderly' ? (
             <Navigate to="/elderly-portal" replace />
+          ) : user.role === 'individual' ? (
+            <Navigate to="/personal-reminders" replace />
           ) : (
             <Navigate to="/dashboard" replace />
           )

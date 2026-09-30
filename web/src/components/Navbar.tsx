@@ -41,6 +41,19 @@ export const Navbar: React.FC = () => {
             </>
           )}
 
+          {user.role === 'individual' && (
+            <>
+              <Link to="/personal-reminders" className="nav-link">
+                <Clock size={18} />
+                <span>Today's Reminders</span>
+              </Link>
+              <Link to="/medications" className="nav-link">
+                <Pill size={18} />
+                <span>My Medications & Alarms</span>
+              </Link>
+            </>
+          )}
+
           {user.role === 'elderly' && (
             <Link to="/elderly-portal" className="nav-link">
               <Clock size={20} />
@@ -53,7 +66,7 @@ export const Navbar: React.FC = () => {
           <div className="user-info">
             <span className="user-name">{user.fullName}</span>
             <span className={`role-badge role-${user.role}`}>
-              {user.role === 'caregiver' ? 'Caregiver' : user.role === 'elderly' ? 'Senior' : 'Admin'}
+              {user.role === 'caregiver' ? 'Caregiver' : user.role === 'elderly' ? 'Senior' : user.role === 'individual' ? 'Personal' : 'Admin'}
             </span>
           </div>
           <button onClick={handleLogout} className="btn-logout" title="Sign out">

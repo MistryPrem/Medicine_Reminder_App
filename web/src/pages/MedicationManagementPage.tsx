@@ -6,9 +6,11 @@ import { Medication, CreateMedicationPayload } from '../types/medication';
 import { LinkedElderly } from '../types/relationship';
 import * as medicationService from '../services/medicationService';
 import * as relationshipService from '../services/relationshipService';
+import { useAuth } from '../hooks/useAuth';
 import { Pill, Plus, Users, Search } from 'lucide-react';
 
 export const MedicationManagementPage: React.FC = () => {
+  const { user } = useAuth();
   const [elderlyList, setElderlyList] = useState<LinkedElderly[]>([]);
   const [selectedElderlyId, setSelectedElderlyId] = useState<string | null>(null);
   const [medications, setMedications] = useState<Medication[]>([]);
@@ -17,6 +19,12 @@ export const MedicationManagementPage: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const loadElderlyList = useCallback(async () => {
+    if (user?.role === 'individual') {
+      setSelectedElderlyId(user._id);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const list = await relationshipService.getCaregiverElderlyListApi();
       setElderlyList(list);
@@ -26,7 +34,7 @@ export const MedicationManagementPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedElderlyId]);
+  }, [selectedElderlyId, user]);
 
   useEffect(() => {
     loadElderlyList();

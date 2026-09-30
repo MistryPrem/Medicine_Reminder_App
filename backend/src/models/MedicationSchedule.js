@@ -71,6 +71,26 @@ const medicationScheduleSchema = new mongoose.Schema(
       default: 'UTC',
       trim: true
     },
+    // Personal Alarm Configuration
+    alarmSound: {
+      type: String,
+      default: 'chime',
+      enum: ['chime', 'gentle_bell', 'radar', 'digital_alarm', 'melody', 'soft_harp']
+    },
+    alarmVolume: {
+      type: Number,
+      default: 80,
+      min: 0,
+      max: 100
+    },
+    vibrate: {
+      type: Boolean,
+      default: true
+    },
+    isAlarmEnabled: {
+      type: Boolean,
+      default: true
+    },
     isActive: {
       type: Boolean,
       default: true,

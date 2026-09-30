@@ -111,6 +111,7 @@ export const getTodayDosesForElderly = async (elderlyId) => {
   })
     .sort({ scheduledFor: 1 })
     .populate('medicationId', 'name genericName dosage dosageUnit instructions currentStock refillThreshold colorCode pillsPerDose')
+    .populate('scheduleId', 'frequencyType scheduledTimes alarmSound alarmVolume vibrate isAlarmEnabled timezone')
     .lean();
 
   return doses;

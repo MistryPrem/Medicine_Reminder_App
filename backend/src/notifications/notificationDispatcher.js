@@ -23,6 +23,9 @@ export const dispatchPushNotification = async (fcmTokens = [], payload) => {
     return { sentCount: fcmTokens.length, failedCount: 0, prunedCount: 0 };
   }
 
+  const soundName = payload.alarmSound ? `${payload.alarmSound}.mp3` : 'default';
+  const channelId = payload.isAlarmEnabled ? 'medication_alarms' : 'medication_reminders';
+
   const message = {
     tokens: fcmTokens,
     notification: {
@@ -35,15 +38,16 @@ export const dispatchPushNotification = async (fcmTokens = [], payload) => {
     android: {
       priority: 'high',
       notification: {
-        sound: 'default',
-        channelId: 'medication_reminders',
-        priority: 'max'
+        sound: soundName,
+        channelId,
+        priority: 'max',
+        defaultVibrateTimings: payload.vibrate !== false
       }
     },
     apns: {
       payload: {
         aps: {
-          sound: 'default',
+          sound: soundName,
           contentAvailable: true
         }
       }

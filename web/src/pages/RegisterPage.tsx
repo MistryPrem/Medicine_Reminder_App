@@ -36,6 +36,8 @@ export const RegisterPage: React.FC = () => {
 
       if (user.role === 'elderly') {
         navigate('/elderly-portal');
+      } else if (user.role === 'individual') {
+        navigate('/personal-reminders');
       } else {
         navigate('/dashboard');
       }
@@ -116,8 +118,9 @@ export const RegisterPage: React.FC = () => {
               value={role}
               onChange={(e) => setRole(e.target.value as UserRole)}
             >
+              <option value="individual">Independent Adult (Personal Medication Reminder)</option>
               <option value="caregiver">Caregiver / Family Member</option>
-              <option value="elderly">Senior / Patient</option>
+              <option value="elderly">Senior / Patient (Assisted Mode)</option>
             </select>
           </div>
 
