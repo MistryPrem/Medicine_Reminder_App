@@ -48,7 +48,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (emailOrPhone: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await api.post('/auth/login', { emailOrPhone, password });
+      const trimmed = emailOrPhone.trim();
+      const response = await api.post('/auth/login', {
+        email: trimmed,
+        emailOrPhone: trimmed,
+        password
+      });
       const { user: loggedInUser, tokens } = response.data.data;
 
       await setAuthTokens(tokens.accessToken, tokens.refreshToken);
