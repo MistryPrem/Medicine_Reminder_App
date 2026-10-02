@@ -40,7 +40,10 @@ export const ElderlyHomeScreen: React.FC = () => {
   const [offlineQueueCount, setOfflineQueueCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const isFirstLoadRef = useRef(true);
+  const hasNotifiedOfflineRef = useRef(false);
+
+  const loadData = useCallback(async (isManualRefresh = false) => {
     try {
       // Check offline queue count
       const queue = await getOfflineQueue();
@@ -50,13 +53,17 @@ export const ElderlyHomeScreen: React.FC = () => {
       const remoteDoses = await doseService.getTodayDoses();
       setDoses(remoteDoses);
       await saveTodayDosesLocally(remoteDoses);
-    } catch (error) {
-      console.warn('Network fetch failed, loading local doses:', error);
+      hasNotifiedOfflineRef.current = false;
+    } catch (error: any) {
+      console.warn('Network fetch failed, loading local doses:', error?.message || error);
       const localDoses = await getLocalTodayDoses();
       if (localDoses.length > 0) {
         setDoses(localDoses);
-        showToast({ message: 'Viewing saved offline schedule.', type: 'warning' });
-      } else {
+        if (!hasNotifiedOfflineRef.current && isManualRefresh) {
+          showToast({ message: 'Viewing saved offline schedule.', type: 'warning' });
+          hasNotifiedOfflineRef.current = true;
+        }
+      } else if (isManualRefresh) {
         showToast({ message: 'Could not load today doses. Check internet connection.', type: 'error' });
       }
     } finally {
@@ -86,11 +93,12 @@ export const ElderlyHomeScreen: React.FC = () => {
       unsubscribe();
       alarmMonitor.stopMonitoring();
     };
-  }, [loadData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
-    loadData();
+    loadData(true);
   };
 
   const handleTake = async (doseId: string) => {

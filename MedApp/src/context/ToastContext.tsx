@@ -20,7 +20,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [toast, setToast] = useState<ToastOptions | null>(null);
 
-  const showToast = (options: ToastOptions | string) => {
+  const showToast = React.useCallback((options: ToastOptions | string) => {
     const toastConfig = typeof options === 'string' ? { message: options, type: 'info' as ToastType } : options;
     setToast(toastConfig);
 
@@ -28,9 +28,9 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setTimeout(() => {
       setToast(null);
     }, duration);
-  };
+  }, []);
 
-  const hideToast = () => setToast(null);
+  const hideToast = React.useCallback(() => setToast(null), []);
 
   const getTypeStyle = (type: ToastType = 'info') => {
     switch (type) {
