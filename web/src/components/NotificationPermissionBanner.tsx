@@ -4,6 +4,7 @@ import {
   getNotificationPermission,
   requestNotificationPermission,
   isNotificationSupported,
+  showLocalNotification,
   NotificationPermissionState
 } from '../utils/webNotification';
 
