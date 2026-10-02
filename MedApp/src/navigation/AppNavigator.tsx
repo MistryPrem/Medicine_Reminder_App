@@ -7,6 +7,7 @@ import { LoginScreen } from '../screens/LoginScreen';
 import { ElderlyHomeScreen } from '../screens/ElderlyHomeScreen';
 import { HistoryScreen } from '../screens/HistoryScreen';
 import { AddMedicationScreen } from '../screens/AddMedicationScreen';
+import { ProfileSettingsScreen } from '../screens/ProfileSettingsScreen';
 import { RootStackParamList } from '../types/navigation';
 import { THEME } from '../constants/theme';
 
@@ -48,6 +49,17 @@ export const AppNavigator: React.FC = () => {
               options={{
                 headerShown: true,
                 title: 'New Medication',
+                headerStyle: { backgroundColor: THEME.colors.surface },
+                headerTintColor: THEME.colors.text,
+                headerTitleStyle: { fontWeight: '700' },
+              }}
+            />
+            <Stack.Screen
+              name="ProfileSettings"
+              component={ProfileSettingsScreen}
+              options={{
+                headerShown: true,
+                title: 'Settings',
                 headerStyle: { backgroundColor: THEME.colors.surface },
                 headerTintColor: THEME.colors.text,
                 headerTitleStyle: { fontWeight: '700' },

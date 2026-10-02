@@ -174,7 +174,7 @@ export const AddMedicationScreen: React.FC = () => {
 
           <CustomTextInput
             label="Instructions"
-            placeholder="e.g. Take with warm water after dinner"
+            placeholder="e.g. Take after breakfast"
             value={instructions}
             onChangeText={setInstructions}
           />
@@ -229,7 +229,8 @@ export const AddMedicationScreen: React.FC = () => {
           )}
         </CustomCard>
 
-        {/* Stock & Refills Card */}
+        {/* Note: Pill Inventory & Stock Alerts temporarily hidden per user request */}
+        {/*
         <CustomCard style={styles.card}>
           <Text style={styles.sectionHeader}>Pill Inventory & Alerts</Text>
           <View style={styles.row}>
@@ -253,6 +254,7 @@ export const AddMedicationScreen: React.FC = () => {
             </View>
           </View>
         </CustomCard>
+        */}
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>

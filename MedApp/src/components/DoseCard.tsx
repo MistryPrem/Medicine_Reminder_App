@@ -102,47 +102,36 @@ export const DoseCard: React.FC<DoseCardProps> = ({
         </View>
       </View>
 
-      {/* Medication Details */}
+      {/* Medication Details (Compact) */}
       <View style={styles.content}>
-        <Text style={styles.medName}>{dose.medicationId?.name}</Text>
-        <Text style={styles.dosageText}>
-          {dose.medicationId?.dosage} {dose.medicationId?.dosageUnit}
-          {dose.medicationId?.pillsPerDose > 1 ? ` (${dose.medicationId.pillsPerDose} pills)` : ''}
-        </Text>
-
-        {dose.medicationId?.instructions ? (
-          <Text style={styles.instructionsText}>
-            "{dose.medicationId.instructions}"
+        <View style={styles.titleRow}>
+          <Text style={styles.medName}>{dose.medicationId?.name}</Text>
+          <Text style={styles.dosageText}>
+            {dose.medicationId?.dosage} {dose.medicationId?.dosageUnit}
           </Text>
-        ) : null}
+        </View>
 
-        {/* Alarm configuration preview */}
-        {activeAlarm?.alarmSound ? (
-          <View style={styles.alarmBadge}>
-            <Text style={styles.alarmIcon}>🔔</Text>
-            <Text style={styles.alarmText}>
-              Alarm: {activeAlarm.alarmSound} {activeAlarm.vibrate ? '• Vibrate' : ''}
-            </Text>
-          </View>
-        ) : null}
+        <Text style={styles.instructionsText}>
+          {dose.medicationId?.instructions || 'Take after breakfast'}
+        </Text>
       </View>
 
       {/* Action Buttons for Pending or Snoozed Doses */}
       {!isCompleted && !isSkipped && (
         <View style={styles.actionsContainer}>
           <CustomButton
-            title="TAKE"
+            title="✓ TAKE"
             variant="success"
-            size="md"
+            size="sm"
             onPress={() => handleAction(() => onTake(dose._id))}
             isLoading={busy}
             style={styles.actionBtnTake}
           />
 
           <CustomButton
-            title="SNOOZE 15m"
+            title="⏰ SNOOZE"
             variant="outline"
-            size="md"
+            size="sm"
             onPress={() => handleAction(() => onSnooze(dose._id, 15))}
             disabled={busy}
             style={styles.actionBtnSnooze}
@@ -151,7 +140,7 @@ export const DoseCard: React.FC<DoseCardProps> = ({
           <CustomButton
             title="SKIP"
             variant="ghost"
-            size="md"
+            size="sm"
             onPress={() => setShowSkipModal(true)}
             disabled={busy}
             style={styles.actionBtnSkip}
@@ -202,12 +191,12 @@ export const DoseCard: React.FC<DoseCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     backgroundColor: THEME.colors.surface,
-    borderRadius: THEME.radii.lg,
-    padding: THEME.spacing.lg,
-    marginBottom: THEME.spacing.md,
-    borderWidth: 1.5,
+    borderRadius: THEME.radii.md,
+    padding: 12,
+    marginBottom: 10,
+    borderWidth: 1,
     borderColor: THEME.colors.surfaceBorder,
-    borderLeftWidth: 6,
+    borderLeftWidth: 5,
     borderLeftColor: THEME.colors.primary,
     ...THEME.shadows.card,
   },
@@ -227,7 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   timeBadge: {
     flexDirection: 'row',
@@ -235,25 +224,25 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   clockIcon: {
-    fontSize: 16,
+    fontSize: 14,
   },
   timeText: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '800',
     color: THEME.colors.text,
   },
   zoneTag: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '800',
     color: THEME.colors.primary,
     backgroundColor: THEME.colors.primaryLight,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderRadius: 3,
   },
   statusPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: THEME.radii.full,
     backgroundColor: THEME.colors.surfaceSubtle,
   },
@@ -270,7 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f5f9',
   },
   statusText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '800',
     color: THEME.colors.textSecondary,
   },
@@ -287,58 +276,43 @@ const styles = StyleSheet.create({
     color: THEME.colors.textMuted,
   },
   content: {
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 8,
   },
   medName: {
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: '800',
     color: THEME.colors.text,
-    marginBottom: 4,
   },
   dosageText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
     color: THEME.colors.textSecondary,
   },
   instructionsText: {
-    fontSize: 13,
+    fontSize: 12,
     color: THEME.colors.textMuted,
     fontStyle: 'italic',
-    marginTop: 6,
-  },
-  alarmBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginTop: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    backgroundColor: THEME.colors.surfaceSubtle,
-    borderRadius: THEME.radii.sm,
-    alignSelf: 'flex-start',
-  },
-  alarmIcon: {
-    fontSize: 12,
-  },
-  alarmText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: THEME.colors.textSecondary,
+    marginTop: 2,
   },
   actionsContainer: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 14,
+    gap: 8,
+    marginTop: 8,
     alignItems: 'center',
   },
   actionBtnTake: {
-    flex: 1.8,
+    flex: 1.4,
   },
   actionBtnSnooze: {
-    flex: 1.6,
+    flex: 1.3,
   },
   actionBtnSkip: {
-    flex: 1,
+    flex: 0.9,
     backgroundColor: THEME.colors.surfaceSubtle,
     borderWidth: 1,
     borderColor: THEME.colors.surfaceBorder,

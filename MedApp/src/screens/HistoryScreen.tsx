@@ -92,6 +92,37 @@ export const HistoryScreen: React.FC = () => {
         }}
       />
 
+      {/* Daily Metrics Summary Bar */}
+      <View style={styles.statsRow}>
+        <View style={[styles.statChip, { backgroundColor: THEME.colors.successLight }]}>
+          <Text style={[styles.statNumber, { color: THEME.colors.success }]}>
+            {historyDoses.filter((d) => d.status === 'taken').length}
+          </Text>
+          <Text style={[styles.statLabel, { color: THEME.colors.success }]}>Taken</Text>
+        </View>
+
+        <View style={[styles.statChip, { backgroundColor: THEME.colors.dangerLight }]}>
+          <Text style={[styles.statNumber, { color: THEME.colors.danger }]}>
+            {historyDoses.filter((d) => d.status === 'missed').length}
+          </Text>
+          <Text style={[styles.statLabel, { color: THEME.colors.danger }]}>Missed</Text>
+        </View>
+
+        <View style={[styles.statChip, { backgroundColor: '#f1f5f9' }]}>
+          <Text style={[styles.statNumber, { color: THEME.colors.textMuted }]}>
+            {historyDoses.filter((d) => d.status === 'skipped').length}
+          </Text>
+          <Text style={[styles.statLabel, { color: THEME.colors.textMuted }]}>Skipped</Text>
+        </View>
+
+        <View style={[styles.statChip, { backgroundColor: THEME.colors.primaryLight }]}>
+          <Text style={[styles.statNumber, { color: THEME.colors.primary }]}>
+            {historyDoses.filter((d) => d.status === 'scheduled' || d.status === 'reminder_sent' || d.status === 'snoozed').length}
+          </Text>
+          <Text style={[styles.statLabel, { color: THEME.colors.primary }]}>Pending</Text>
+        </View>
+      </View>
+
       {isLoading ? (
         <CustomLoader message="Loading history records..." />
       ) : historyDoses.length === 0 ? (
@@ -163,6 +194,29 @@ const styles = StyleSheet.create({
     ...THEME.typography.body,
     color: THEME.colors.textSecondary,
     marginBottom: THEME.spacing.lg,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+    marginTop: 4,
+  },
+  statChip: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: THEME.radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  statLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    marginTop: 2,
   },
   emptyCard: {
     padding: 32,

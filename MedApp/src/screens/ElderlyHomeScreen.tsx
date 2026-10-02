@@ -21,12 +21,13 @@ import {
 import { DoseCard } from '../components/DoseCard';
 import { EmergencyBanner } from '../components/EmergencyBanner';
 import { OfflineSyncBanner } from '../components/OfflineSyncBanner';
-import { CustomLoader, CustomButton, CustomCard } from '../components/common';
+import { CustomLoader, CustomButton, CustomCard, CustomModal } from '../components/common';
 import { THEME } from '../constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types/navigation';
+import { alarmMonitor, ActiveAlarmPayload } from '../services/alarmMonitor';
 
 export const ElderlyHomeScreen: React.FC = () => {
   const { user, elderlyProfile, logout } = useAuth();
@@ -64,9 +65,22 @@ export const ElderlyHomeScreen: React.FC = () => {
     }
   }, [showToast]);
 
+  const [activeAlarm, setActiveAlarm] = useState<ActiveAlarmPayload | null>(null);
+
   useEffect(() => {
     loadData();
-  }, [loadData]);
+    // Start background in-app alarm monitor
+    alarmMonitor.startMonitoring(() => doses);
+
+    const unsubscribe = alarmMonitor.onAlarm((alarm) => {
+      setActiveAlarm(alarm);
+    });
+
+    return () => {
+      unsubscribe();
+      alarmMonitor.stopMonitoring();
+    };
+  }, [loadData, doses]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -119,11 +133,21 @@ export const ElderlyHomeScreen: React.FC = () => {
     }
   };
 
+  const [activeTab, setActiveTab] = useState<'pending' | 'completed' | 'all'>('pending');
+
   const insets = useSafeAreaInsets();
   const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight || 28) : 0;
   const safeTopPadding = Math.max(insets.top, statusBarHeight, 28) + 16;
 
-  const pendingCount = doses.filter((d) => d.status === 'scheduled' || d.status === 'reminder_sent' || d.status === 'snoozed').length;
+  const pendingDoses = doses.filter((d) => d.status === 'scheduled' || d.status === 'reminder_sent' || d.status === 'snoozed');
+  const completedDoses = doses.filter((d) => d.status === 'taken' || d.status === 'skipped');
+  const pendingCount = pendingDoses.length;
+
+  const visibleDoses = activeTab === 'pending'
+    ? pendingDoses
+    : activeTab === 'completed'
+    ? completedDoses
+    : doses;
 
   if (isLoading) {
     return <CustomLoader message="Loading medication schedule..." fullscreen />;
@@ -162,11 +186,11 @@ export const ElderlyHomeScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.logoutBtn}
-            onPress={logout}
-            accessibilityLabel="Sign Out"
+            style={styles.settingsBtn}
+            onPress={() => navigation.navigate('ProfileSettings')}
+            accessibilityLabel="Profile & Settings"
           >
-            <Text style={styles.logoutText}>🚪</Text>
+            <Text style={styles.settingsBtnText}>⚙️</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -190,9 +214,9 @@ export const ElderlyHomeScreen: React.FC = () => {
       <CustomCard variant="primary" style={styles.summaryCard}>
         <View style={styles.summaryContent}>
           <View style={styles.summaryTextContainer}>
-            <Text style={styles.summaryTitle}>Today's Schedule</Text>
+            <Text style={styles.summaryTitle}>Today's Overview</Text>
             <Text style={styles.summarySubtitle}>
-              {pendingCount === 0 ? 'All doses completed for today! 🎉' : `${pendingCount} remaining doses scheduled.`}
+              {pendingCount === 0 ? 'All doses completed for today! 🎉' : `${pendingCount} medicine${pendingCount > 1 ? 's' : ''} awaiting action`}
             </Text>
           </View>
           <View style={styles.badgeCount}>
@@ -201,17 +225,61 @@ export const ElderlyHomeScreen: React.FC = () => {
         </View>
       </CustomCard>
 
+      {/* Filter Tabs (Pending / Completed / All) */}
+      <View style={styles.tabsContainer}>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'pending' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('pending')}
+        >
+          <Text style={[styles.tabText, activeTab === 'pending' && styles.tabTextActive]}>
+            Pending ({pendingDoses.length})
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'completed' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('completed')}
+        >
+          <Text style={[styles.tabText, activeTab === 'completed' && styles.tabTextActive]}>
+            Completed ({completedDoses.length})
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'all' && styles.tabBtnActive]}
+          onPress={() => setActiveTab('all')}
+        >
+          <Text style={[styles.tabText, activeTab === 'all' && styles.tabTextActive]}>
+            All ({doses.length})
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Medication Doses Stack */}
-      {doses.length === 0 ? (
+      {visibleDoses.length === 0 ? (
         <CustomCard style={styles.emptyCard}>
-          <Text style={styles.emptyIcon}>💊</Text>
-          <Text style={styles.emptyTitle}>No Medications Today</Text>
+          <Text style={styles.emptyIcon}>
+            {activeTab === 'pending' ? '🎉' : activeTab === 'completed' ? '📝' : '💊'}
+          </Text>
+          <Text style={styles.emptyTitle}>
+            {activeTab === 'pending'
+              ? 'No Pending Medicines'
+              : activeTab === 'completed'
+              ? 'No Completed Medicines'
+              : 'No Medications Today'}
+          </Text>
           <Text style={styles.emptyText}>
-            You have no doses scheduled for today. Relax and stay well hydrated!
+            {activeTab === 'pending'
+              ? doses.length > 0
+                ? 'All scheduled medicines for today have been taken or skipped!'
+                : 'You have no medicines scheduled for today.'
+              : activeTab === 'completed'
+              ? 'Medicines marked as taken or skipped will appear here.'
+              : 'Add a new medication using the + Add button above.'}
           </Text>
         </CustomCard>
       ) : (
-        doses.map((dose) => (
+        visibleDoses.map((dose) => (
           <DoseCard
             key={dose._id}
             dose={dose}
@@ -220,6 +288,54 @@ export const ElderlyHomeScreen: React.FC = () => {
             onSkip={handleSkip}
           />
         ))
+      )}
+
+      {/* Active High-Priority Alarm Alert Modal */}
+      {activeAlarm && (
+        <CustomModal
+          visible={true}
+          onClose={() => {
+            alarmMonitor.dismissAlarm(activeAlarm.doseId);
+            setActiveAlarm(null);
+          }}
+          title="🔔 MEDICATION REMINDER"
+          footer={
+            <>
+              <CustomButton
+                title="⏰ SNOOZE 15m"
+                variant="outline"
+                size="md"
+                onPress={async () => {
+                  alarmMonitor.dismissAlarm(activeAlarm.doseId);
+                  const id = activeAlarm.doseId;
+                  setActiveAlarm(null);
+                  await handleSnooze(id, 15);
+                }}
+              />
+              <CustomButton
+                title="✓ TAKE NOW"
+                variant="success"
+                size="md"
+                onPress={async () => {
+                  alarmMonitor.dismissAlarm(activeAlarm.doseId);
+                  const id = activeAlarm.doseId;
+                  setActiveAlarm(null);
+                  await handleTake(id);
+                }}
+              />
+            </>
+          }
+        >
+          <View style={styles.alarmModalContent}>
+            <Text style={styles.alarmModalIcon}>💊</Text>
+            <Text style={styles.alarmModalTitle}>{activeAlarm.medicationName}</Text>
+            <Text style={styles.alarmModalDosage}>{activeAlarm.dosage}</Text>
+            <Text style={styles.alarmModalTime}>Scheduled for: {activeAlarm.scheduledTime}</Text>
+            <Text style={styles.alarmModalSubtext}>
+              Please take your prescribed dose on time for best health outcomes.
+            </Text>
+          </View>
+        </CustomModal>
       )}
     </ScrollView>
   );
@@ -288,22 +404,54 @@ const styles = StyleSheet.create({
   historyBtnText: {
     fontSize: 16,
   },
-  logoutBtn: {
-    backgroundColor: THEME.colors.surfaceSubtle,
+  settingsBtn: {
+    backgroundColor: THEME.colors.surface,
     borderWidth: 1.5,
     borderColor: THEME.colors.surfaceBorder,
-    paddingHorizontal: 10,
+    paddingHorizontal: 11,
     paddingVertical: 8,
     borderRadius: THEME.radii.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logoutText: {
+  settingsBtnText: {
     fontSize: 16,
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: THEME.colors.surfaceSubtle,
+    borderRadius: THEME.radii.md,
+    padding: 4,
+    marginBottom: THEME.spacing.md,
+    borderWidth: 1,
+    borderColor: THEME.colors.surfaceBorder,
+  },
+  tabBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: THEME.radii.sm,
+  },
+  tabBtnActive: {
+    backgroundColor: THEME.colors.surface,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tabText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: THEME.colors.textMuted,
+  },
+  tabTextActive: {
+    color: THEME.colors.primary,
   },
   summaryCard: {
     padding: 16,
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
   },
   summaryContent: {
     flexDirection: 'row',
@@ -356,5 +504,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: THEME.colors.textMuted,
     textAlign: 'center',
+  },
+  alarmModalContent: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  alarmModalIcon: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
+  alarmModalTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: THEME.colors.text,
+    textAlign: 'center',
+  },
+  alarmModalDosage: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: THEME.colors.primary,
+    marginTop: 4,
+  },
+  alarmModalTime: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: THEME.colors.textSecondary,
+    marginTop: 6,
+  },
+  alarmModalSubtext: {
+    fontSize: 12,
+    color: THEME.colors.textMuted,
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 8,
   },
 });

@@ -3,4 +3,5 @@ export type RootStackParamList = {
   ElderlyHome: undefined;
   History: undefined;
   AddMedication: undefined;
+  ProfileSettings: undefined;
 };
