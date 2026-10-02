@@ -6,7 +6,11 @@ import { ROLES } from '../constants/roles.js';
 export const verifyElderlyAccess = (requiredPermission = 'view_only') => {
   return async (req, res, next) => {
     try {
-      const targetElderlyId = req.params.elderlyId || req.body.elderlyId || req.query.elderlyId;
+      const targetElderlyId =
+        req.params.elderlyId ||
+        req.body.elderlyId ||
+        req.query.elderlyId ||
+        req.user?._id;
 
       if (!targetElderlyId) {
         throw AppError.badRequest('Elderly identifier is required', ERROR_CODES.VALIDATION_ERROR);
@@ -17,7 +21,7 @@ export const verifyElderlyAccess = (requiredPermission = 'view_only') => {
         return next();
       }
 
-      // 2. Elderly individuals accessing their own records
+      // 2. Individuals and elderly individuals accessing their own records
       if (req.user._id.toString() === targetElderlyId.toString()) {
         return next();
       }
