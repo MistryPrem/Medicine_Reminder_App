@@ -1,16 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Pill, LayoutDashboard, Clock, LogOut, HeartPulse, Menu, X } from 'lucide-react';
+import { Pill, LayoutDashboard, Clock, LogOut, HeartPulse, Menu, X, Bell, BellOff } from 'lucide-react';
 import { formatTo12HourTime, DEFAULT_TIMEZONE } from '../utils/timeFormat';
+import {
+  getNotificationPermission,
+  requestNotificationPermission,
+  isNotificationSupported,
+  NotificationPermissionState
+} from '../utils/webNotification';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
+  const [notifState, setNotifState] = useState<NotificationPermissionState>('default');
 
   const effectiveTz = user?.timezone || DEFAULT_TIMEZONE;
+
+  useEffect(() => {
+    if (isNotificationSupported()) {
+      setNotifState(getNotificationPermission());
+    }
+  }, []);
+
+  const handleRequestNotif = async () => {
+    const res = await requestNotificationPermission();
+    setNotifState(res);
+  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -107,6 +125,23 @@ export const Navbar: React.FC = () => {
             <span className="clock-time">{currentTime}</span>
             <span className="clock-zone">IST</span>
           </div>
+
+          {/* Notification bell button */}
+          <button
+            onClick={handleRequestNotif}
+            className={`btn-navbar-notif ${notifState === 'granted' ? 'notif-active' : notifState === 'denied' ? 'notif-blocked' : 'notif-pending'}`}
+            title={
+              notifState === 'granted'
+                ? 'Notifications enabled'
+                : notifState === 'denied'
+                ? 'Notifications blocked in browser. Click to see instructions'
+                : 'Click to enable browser notifications & alarms'
+            }
+            aria-label="Browser notification settings"
+          >
+            {notifState === 'denied' ? <BellOff size={18} /> : <Bell size={18} />}
+            {notifState !== 'granted' && <span className="notif-pulse-dot" />}
+          </button>
 
           <div className="user-info">
             <span className="user-name">{user.fullName}</span>
