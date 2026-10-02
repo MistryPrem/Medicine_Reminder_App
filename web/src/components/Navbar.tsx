@@ -7,6 +7,7 @@ import {
   getNotificationPermission,
   requestNotificationPermission,
   isNotificationSupported,
+  showLocalNotification,
   NotificationPermissionState
 } from '../utils/webNotification';
 
@@ -26,6 +27,13 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const handleRequestNotif = async () => {
+    if (notifState === 'granted') {
+      showLocalNotification('CareSync Medication Alert 🔔', {
+        body: 'Audible reminder check: All alarms and browser alerts are functional!',
+        tag: 'navbar-test-reminder'
+      });
+      return;
+    }
     const res = await requestNotificationPermission();
     setNotifState(res);
   };

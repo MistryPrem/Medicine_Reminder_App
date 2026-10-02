@@ -66,29 +66,62 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
 }
 
 /**
- * Displays a local browser notification if permitted
+ * Registers the background service worker if supported
  */
-export function showLocalNotification(title: string, options?: NotificationOptions): Notification | null {
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+  if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      return reg;
+    } catch (e) {
+      console.warn('[ServiceWorker] Registration failed:', e);
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
+ * Displays a local browser notification with sound and vibration
+ */
+export async function showLocalNotification(title: string, options?: NotificationOptions): Promise<Notification | void> {
   if (!isNotificationSupported() || Notification.permission !== 'granted') {
-    return null;
+    return;
   }
 
-  try {
-    const notification = new Notification(title, {
-      badge: '/vite.svg',
-      icon: '/vite.svg',
-      ...options
-    });
+  // Play auditory alert chime
+  playAlarmSound('chime');
 
+  const notifOptions: NotificationOptions = {
+    badge: '/vite.svg',
+    icon: '/vite.svg',
+    requireInteraction: true,
+    ...options
+  };
+
+  // Try showing via active service worker (standard in Chrome)
+  if ('serviceWorker' in navigator) {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      if (reg && reg.showNotification) {
+        await reg.showNotification(title, notifOptions);
+        return;
+      }
+    } catch (e) {
+      console.warn('[Notifications] ServiceWorker showNotification failed, trying fallback:', e);
+    }
+  }
+
+  // Fallback to classic window Notification constructor
+  try {
+    const notification = new Notification(title, notifOptions);
     notification.onclick = () => {
       window.focus();
       notification.close();
     };
-
     return notification;
   } catch (e) {
-    console.error('[Notifications] Failed to display notification:', e);
-    return null;
+    console.error('[Notifications] Direct Notification error:', e);
   }
 }
 

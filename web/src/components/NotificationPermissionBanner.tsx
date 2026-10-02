@@ -20,7 +20,7 @@ export const NotificationPermissionBanner: React.FC = () => {
     if (isDismissed) setDismissed(true);
   }, []);
 
-  if (!isNotificationSupported() || permission === 'granted' || dismissed) {
+  if (!isNotificationSupported() || dismissed) {
     return null;
   }
 
@@ -49,26 +49,46 @@ export const NotificationPermissionBanner: React.FC = () => {
           <strong>
             {permission === 'denied'
               ? 'Notifications are blocked in your browser'
+              : permission === 'granted'
+              ? 'Browser Notifications are Active'
               : 'Enable Medication Reminders & Alarms'}
           </strong>
           <span>
             {permission === 'denied'
               ? 'To get audible pill alarms, click the lock icon 🔒 next to the URL and set Notifications to "Allow".'
+              : permission === 'granted'
+              ? 'Chrome is configured to deliver audible medication reminders and missed-dose alerts.'
               : 'Allow notifications so Chrome can alert you the moment a dose is due, even if this tab is in the background.'}
           </span>
         </div>
       </div>
 
       <div className="notif-banner-actions">
-        {permission !== 'denied' && (
+        {permission === 'granted' ? (
           <button
-            onClick={handleEnableNotifications}
-            disabled={isPrompting}
+            onClick={() => {
+              showLocalNotification('CareSync Test Reminder 🔔', {
+                body: 'Your browser notifications and audio chime are working perfectly!',
+                tag: 'test-dose-reminder'
+              });
+            }}
             className="btn-enable-notif"
+            style={{ backgroundColor: 'var(--success)', color: '#0b1120' }}
           >
             <Bell size={15} />
-            <span>{isPrompting ? 'Requesting...' : 'Allow Notifications'}</span>
+            <span>Send Test Alert</span>
           </button>
+        ) : (
+          permission !== 'denied' && (
+            <button
+              onClick={handleEnableNotifications}
+              disabled={isPrompting}
+              className="btn-enable-notif"
+            >
+              <Bell size={15} />
+              <span>{isPrompting ? 'Requesting...' : 'Allow Notifications'}</span>
+            </button>
+          )
         )}
         <button
           onClick={handleDismiss}
