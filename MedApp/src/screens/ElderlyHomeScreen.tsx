@@ -139,11 +139,19 @@ export const ElderlyHomeScreen: React.FC = () => {
 
         <View style={styles.topBarActions}>
           <TouchableOpacity
+            style={styles.addMedBtn}
+            onPress={() => navigation.navigate('AddMedication')}
+            accessibilityLabel="Add Medication"
+          >
+            <Text style={styles.addMedBtnText}>+ Add</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={styles.historyBtn}
             onPress={() => navigation.navigate('History')}
             accessibilityLabel="View Dose History"
           >
-            <Text style={styles.historyBtnText}>📊 History</Text>
+            <Text style={styles.historyBtnText}>📊</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -240,6 +248,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  addMedBtn: {
+    backgroundColor: THEME.colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: THEME.radii.md,
+  },
+  addMedBtnText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#ffffff',
   },
   historyBtn: {
     backgroundColor: THEME.colors.surface,
