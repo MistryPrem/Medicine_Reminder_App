@@ -1,5 +1,6 @@
 import { AppError } from '../utils/appError.js';
 import { ERROR_CODES } from '../constants/errorCodes.js';
+import { logger } from '../utils/logger.js';
 
 export const validate = (schema) => (req, res, next) => {
   try {
@@ -14,6 +15,13 @@ export const validate = (schema) => (req, res, next) => {
         field: issue.path.join('.').replace(/^body\.|^query\.|^params\./, ''),
         message: issue.message
       }));
+
+      logger.warn(`[VALIDATION ERROR] ${req.method} ${req.originalUrl}`, {
+        method: req.method,
+        path: req.originalUrl,
+        validationIssues: details,
+        receivedBody: req.body
+      });
 
       return next(AppError.badRequest('Validation failed', ERROR_CODES.VALIDATION_ERROR, details));
     }

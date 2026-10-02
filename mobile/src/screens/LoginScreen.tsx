@@ -28,10 +28,17 @@ export const LoginScreen: React.FC = () => {
     try {
       await login(identifier.trim(), password);
     } catch (error: any) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        'Login failed. Please check your credentials.';
+      let message = error.response?.data?.message || error.message || 'Login failed.';
+      
+      // If backend returned specific field validation issues, display them explicitly
+      if (error.response?.data?.details && Array.isArray(error.response.data.details)) {
+        const issues = error.response.data.details
+          .map((d: { field: string; message: string }) => `• ${d.field}: ${d.message}`)
+          .join('\n');
+        message = `${message}\n\n${issues}`;
+      }
+
+      console.error('🚨 [LOGIN SCREEN ERROR]', error);
       Alert.alert('Login Failed', message);
     }
   };

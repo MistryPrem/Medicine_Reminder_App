@@ -49,14 +49,34 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Global rate limiting
 app.use(apiRateLimiter);
 
-// Lightweight request logging
+// Comprehensive API Request & Response Logging Middleware
 app.use((req, res, next) => {
   const start = Date.now();
+  const fullUrl = `${req.protocol}://${req.get('host') || 'localhost'}${req.originalUrl}`;
+  
+  // Safe logging of request payload (strip out passwords if any)
+  const safeBody = req.body ? { ...req.body } : {};
+  if (safeBody.password) safeBody.password = '[REDACTED]';
+
+  logger.info(`[API INCOMING] ${req.method} ${fullUrl}`, {
+    method: req.method,
+    url: fullUrl,
+    ip: req.ip,
+    query: req.query,
+    body: safeBody
+  });
+
   res.on('finish', () => {
     const duration = Date.now() - start;
-    logger.info(`${req.method} ${req.originalUrl} ${res.statusCode} [${duration}ms]`, {
-      ip: req.ip,
-      userAgent: req.get('user-agent')
+    const isError = res.statusCode >= 400;
+    const logFn = isError ? logger.warn : logger.info;
+
+    logFn(`[API COMPLETED] ${req.method} ${fullUrl} | Status: ${res.statusCode} [${duration}ms]`, {
+      method: req.method,
+      url: fullUrl,
+      statusCode: res.statusCode,
+      durationMs: duration,
+      ip: req.ip
     });
   });
   next();

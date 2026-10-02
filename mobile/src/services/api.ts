@@ -25,21 +25,64 @@ export const clearAuthTokens = async (): Promise<void> => {
   await AsyncStorage.removeItem('refreshToken');
 };
 
+// Request interceptor with comprehensive console & DevTools logging
 api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const token = await AsyncStorage.getItem('accessToken');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    const fullUrl = `${config.baseURL || ''}${config.url || ''}`;
+    const safeData = config.data ? { ...config.data } : undefined;
+    if (safeData && safeData.password) safeData.password = '[REDACTED]';
+
+    console.log(`📡 [API REQUEST] ${config.method?.toUpperCase()} ${fullUrl}`, {
+      method: config.method?.toUpperCase(),
+      url: fullUrl,
+      params: config.params,
+      data: safeData,
+      headers: config.headers
+    });
+
     return config;
   },
-  (error: AxiosError) => Promise.reject(error)
+  (error: AxiosError) => {
+    console.error(`❌ [API REQUEST ERROR]`, error);
+    return Promise.reject(error);
+  }
 );
 
-// Response interceptor with auto-refresh mechanism
+// Response interceptor with auto-refresh mechanism and full logging
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const fullUrl = `${response.config.baseURL || ''}${response.config.url || ''}`;
+    console.log(
+      `✅ [API SUCCESS] ${response.config.method?.toUpperCase()} ${fullUrl} | Status: ${response.status}`,
+      {
+        status: response.status,
+        url: fullUrl,
+        data: response.data
+      }
+    );
+    return response;
+  },
   async (error: AxiosError) => {
+    const fullUrl = `${error.config?.baseURL || ''}${error.config?.url || ''}`;
+    const status = error.response?.status;
+    const responseData = error.response?.data;
+
+    console.warn(
+      `⚠️ [API ERROR] ${error.config?.method?.toUpperCase()} ${fullUrl} | Status: ${status || 'NETWORK_FAILED'}`,
+      {
+        message: error.message,
+        status,
+        url: fullUrl,
+        response: responseData,
+        code: error.code
+      }
+    );
+
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
