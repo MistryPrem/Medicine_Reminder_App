@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -66,11 +66,17 @@ export const ElderlyHomeScreen: React.FC = () => {
   }, [showToast]);
 
   const [activeAlarm, setActiveAlarm] = useState<ActiveAlarmPayload | null>(null);
+  const dosesRef = useRef<MedicationDose[]>([]);
+
+  useEffect(() => {
+    dosesRef.current = doses;
+  }, [doses]);
 
   useEffect(() => {
     loadData();
-    // Start background in-app alarm monitor
-    alarmMonitor.startMonitoring(() => doses);
+
+    // Start background in-app alarm monitor reading from dosesRef
+    alarmMonitor.startMonitoring(() => dosesRef.current);
 
     const unsubscribe = alarmMonitor.onAlarm((alarm) => {
       setActiveAlarm(alarm);
@@ -80,7 +86,7 @@ export const ElderlyHomeScreen: React.FC = () => {
       unsubscribe();
       alarmMonitor.stopMonitoring();
     };
-  }, [loadData, doses]);
+  }, [loadData]);
 
   const onRefresh = () => {
     setRefreshing(true);
