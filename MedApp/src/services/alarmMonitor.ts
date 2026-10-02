@@ -22,8 +22,9 @@ class AlarmMonitorService {
   private async ensureNotificationChannel() {
     if (this.channelCreated || Platform.OS !== 'android') return;
     try {
+      await notifee.requestPermission();
       await notifee.createChannel({
-        id: 'medication_alarms',
+        id: 'medication_alarms_v2',
         name: 'Medication Alarms & Reminders',
         importance: AndroidImportance.HIGH,
         sound: 'default', // Plays native Android system alarm/ringtone
@@ -97,7 +98,7 @@ class AlarmMonitorService {
                 title: `⏰ Time for ${medName}!`,
                 body: `Scheduled dose (${dosageStr}) is due now at ${scheduledTimeStr}.`,
                 android: {
-                  channelId: 'medication_alarms',
+                  channelId: 'medication_alarms_v2',
                   importance: AndroidImportance.HIGH,
                   sound: prefs.alarmSoundEnabled ? 'default' : undefined,
                   category: AndroidCategory.ALARM,

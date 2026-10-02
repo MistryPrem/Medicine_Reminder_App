@@ -118,10 +118,13 @@ export const ProfileSettingsScreen: React.FC = () => {
     }
 
     try {
+      // 1. Explicitly request permission (Android 13+ / Tiramisu and iOS)
+      await notifee.requestPermission();
+
       if (Platform.OS === 'android') {
         await notifee.createChannel({
-          id: 'test_alarm_channel',
-          name: 'Test Alarm Channel',
+          id: 'test_alarm_channel_v2',
+          name: 'Medication Alarm Sound',
           importance: AndroidImportance.HIGH,
           sound: 'default',
           vibration: vibrate,
@@ -130,11 +133,11 @@ export const ProfileSettingsScreen: React.FC = () => {
 
       await notifee.displayNotification({
         title: '🔔 Test Medication Alarm',
-        body: `Testing alarm sound [${ringtone.replace('_', ' ')}] with ${vibrate ? 'vibration' : 'no vibration'}.`,
+        body: `Alarm sound playing [${ringtone.replace('_', ' ')}].`,
         android: {
-          channelId: 'test_alarm_channel',
+          channelId: 'test_alarm_channel_v2',
           importance: AndroidImportance.HIGH,
-          sound: alarmSoundEnabled ? 'default' : undefined,
+          sound: 'default',
           category: AndroidCategory.ALARM,
           visibility: AndroidVisibility.PUBLIC,
           pressAction: { id: 'default' },
