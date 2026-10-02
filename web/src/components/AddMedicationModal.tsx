@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CreateMedicationPayload, DosageUnit, FrequencyType } from '../types/medication';
 import { X, Plus, Trash2 } from 'lucide-react';
+import { format24HourStringTo12Hour } from '../utils/timeFormat';
 
 interface AddMedicationModalProps {
   elderlyId: string;
@@ -222,7 +223,7 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
           </div>
 
           <div className="form-group">
-            <label>Scheduled Dosing Times (24-Hour)</label>
+            <label>Scheduled Dosing Times (12-Hour AM/PM Preview)</label>
             <div className="times-picker-group">
               {scheduledTimes.map((time, idx) => (
                 <div key={idx} className="time-input-row">
@@ -232,6 +233,9 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
                     value={time}
                     onChange={(e) => handleTimeChange(idx, e.target.value)}
                   />
+                  <span className="time-12h-preview">
+                    {format24HourStringTo12Hour(time)}
+                  </span>
                   {scheduledTimes.length > 1 && (
                     <button
                       type="button"

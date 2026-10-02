@@ -10,6 +10,7 @@ import * as relationshipService from '../services/relationshipService';
 import * as doseService from '../services/doseService';
 import * as medicationService from '../services/medicationService';
 import { Users, CheckCircle2, Clock, AlertTriangle, Plus, UserPlus } from 'lucide-react';
+import { formatFriendlyDate } from '../utils/timeFormat';
 
 export const CaregiverDashboardPage: React.FC = () => {
   const [elderlyList, setElderlyList] = useState<LinkedElderly[]>([]);
@@ -170,7 +171,7 @@ export const CaregiverDashboardPage: React.FC = () => {
             <div className="section-card">
               <div className="section-header">
                 <h2>Today's Medication Timeline: {currentSenior?.fullName}</h2>
-                <span className="date-badge">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+                <span className="date-badge">{formatFriendlyDate()} (IST)</span>
               </div>
 
               {todayDoses.length === 0 ? (

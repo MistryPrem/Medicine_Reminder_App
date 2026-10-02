@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DoseItem } from '../types/medication';
 import { CheckCircle2, Clock, AlertCircle, FastForward, XCircle } from 'lucide-react';
+import { formatTo12HourTime } from '../utils/timeFormat';
 
 interface DoseItemCardProps {
   dose: DoseItem;
@@ -8,6 +9,7 @@ interface DoseItemCardProps {
   onSnooze: (doseId: string, minutes: number) => Promise<void>;
   onSkip: (doseId: string, reason?: string) => Promise<void>;
   isElderlyView?: boolean;
+  timeZone?: string;
 }
 
 export const DoseItemCard: React.FC<DoseItemCardProps> = ({
@@ -15,16 +17,14 @@ export const DoseItemCard: React.FC<DoseItemCardProps> = ({
   onTake,
   onSnooze,
   onSkip,
-  isElderlyView = false
+  isElderlyView = false,
+  timeZone
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSkipModal, setShowSkipModal] = useState(false);
   const [skipReason, setSkipReason] = useState('');
 
-  const scheduledTime = new Date(dose.scheduledFor).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const scheduledTime = formatTo12HourTime(dose.scheduledFor, timeZone);
 
   const handleAction = async (actionFn: () => Promise<void>) => {
     try {

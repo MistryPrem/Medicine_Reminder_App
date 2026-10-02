@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Medication } from '../types/medication';
 import { Pill, Clock, AlertTriangle, PlusCircle, Trash2 } from 'lucide-react';
+import { format24HourStringTo12Hour } from '../utils/timeFormat';
 
 interface MedicationCardProps {
   medication: Medication;
@@ -66,7 +67,7 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
             <Clock size={14} className="icon-schedule" />
             <div className="times-list">
               {medication.schedule.scheduledTimes.map((t, idx) => (
-                <span key={idx} className="time-tag">{t}</span>
+                <span key={idx} className="time-tag">{format24HourStringTo12Hour(t)}</span>
               ))}
             </div>
           </div>

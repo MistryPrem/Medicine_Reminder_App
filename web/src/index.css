@@ -1289,3 +1289,372 @@ input:focus, select:focus, textarea:focus {
     transform: rotate(360deg);
   }
 }
+
+/* ==========================================================================
+   Responsive Design & Mobile/Tablet Enhancements
+   ========================================================================== */
+
+/* Navbar Left & Clock Indicators */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  background-color: var(--bg-surface-elevated);
+}
+
+.mobile-menu-btn:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+.navbar-clock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.clock-icon {
+  color: var(--primary);
+}
+
+.clock-time {
+  letter-spacing: 0.2px;
+}
+
+.clock-zone {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-glow);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.nav-mobile-footer {
+  display: none;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* 12-Hour Preview Badge in Modals */
+.time-12h-preview {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--primary-glow);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Tablet Media Queries (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 20px 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .medications-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .dose-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+/* Mobile & Small Tablet Media Queries (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Navigation */
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: inline-flex !important;
+  }
+
+  .navbar-container {
+    padding: 10px 14px;
+  }
+
+  .brand-title {
+    font-size: 18px;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .navbar-user .user-info {
+    display: none;
+  }
+
+  /* Mobile Drawer Menu */
+  .navbar-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-direction: column;
+    padding: 16px;
+    gap: 10px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .navbar-nav.nav-open {
+    display: flex;
+    animation: slideDown 0.2s ease-out forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .navbar-nav .nav-link {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-mobile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border-subtle);
+    width: 100%;
+  }
+
+  .btn-mobile-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    color: var(--danger);
+    font-weight: 700;
+    font-size: 14px;
+    background: var(--danger-glow);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Content Layouts */
+  .main-content {
+    padding: 16px 12px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 22px;
+  }
+
+  .header-actions {
+    width: 100%;
+    display: flex;
+  }
+
+  .header-actions .btn-primary,
+  .header-actions .btn-secondary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Grids */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dose-list-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .medications-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Dose Cards & Action Buttons */
+  .dose-actions-group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .elderly-scale .dose-actions-group {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .elderly-scale {
+    padding: 16px;
+  }
+
+  .elderly-scale .dose-med-name {
+    font-size: 22px;
+  }
+
+  .elderly-scale .dose-time-badge {
+    font-size: 20px;
+  }
+
+  .elderly-scale .btn-action-take,
+  .elderly-scale .btn-action-snooze,
+  .elderly-scale .btn-action-skip {
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  /* Modals */
+  .modal-box {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 12px;
+    padding: 20px 16px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .time-input-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .time-input-row input[type="time"] {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  /* Senior Selector Bar */
+  .senior-selector-bar {
+    padding: 8px 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .senior-tab {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* Auth Pages */
+  .auth-card {
+    padding: 24px 18px;
+    margin: 16px auto;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .auth-brand h1 {
+    font-size: 24px;
+  }
+
+  /* Emergency Banner */
+  .emergency-banner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .emergency-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .btn-call-emergency {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Elderly Link Box */
+  .elderly-link-form {
+    flex-direction: column;
+  }
+
+  .btn-link-large {
+    width: 100%;
+  }
+
+  /* Section Headers */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* Small Smartphone Media Queries (max-width: 480px) */
+@media (max-width: 480px) {
+  .brand-title {
+    font-size: 16px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .dose-med-name {
+    font-size: 16px;
+  }
+
+  .dose-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+

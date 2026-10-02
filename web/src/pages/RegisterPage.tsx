@@ -31,7 +31,7 @@ export const RegisterPage: React.FC = () => {
         email,
         password,
         role,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata'
       });
 
       if (user.role === 'elderly') {

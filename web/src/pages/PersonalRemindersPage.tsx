@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import * as doseService from '../services/doseService';
 import * as medicationService from '../services/medicationService';
 import { Plus, BellRing, Pill } from 'lucide-react';
+import { formatFriendlyDate } from '../utils/timeFormat';
 
 export const PersonalRemindersPage: React.FC = () => {
   const { user } = useAuth();
@@ -155,11 +156,7 @@ export const PersonalRemindersPage: React.FC = () => {
             <div className="section-header">
               <h2>Today's Schedule & Alarms</h2>
               <span className="date-badge">
-                {new Date().toLocaleDateString(undefined, {
-                  weekday: 'long',
-                  month: 'short',
-                  day: 'numeric'
-                })}
+                {formatFriendlyDate()} (IST)
               </span>
             </div>
 

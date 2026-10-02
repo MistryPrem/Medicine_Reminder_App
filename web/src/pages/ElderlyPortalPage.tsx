@@ -6,6 +6,7 @@ import { ElderlyProfile } from '../types/relationship';
 import * as doseService from '../services/doseService';
 import * as relationshipService from '../services/relationshipService';
 import { PhoneCall, Link2, CheckCircle2 } from 'lucide-react';
+import { formatFriendlyDate } from '../utils/timeFormat';
 
 export const ElderlyPortalPage: React.FC = () => {
   const [doses, setDoses] = useState<DoseItem[]>([]);
@@ -129,7 +130,12 @@ export const ElderlyPortalPage: React.FC = () => {
 
         {/* Today's Medication Section */}
         <div className="elderly-doses-header">
-          <h2>Today's Medications</h2>
+          <div>
+            <h2>Today's Medications</h2>
+            <span className="date-badge" style={{ fontSize: '14px', marginTop: '4px', display: 'inline-block' }}>
+              {formatFriendlyDate()} (IST)
+            </span>
+          </div>
           <span className="pending-badge">
             {pendingDoses.length === 0 ? 'All Completed!' : `${pendingDoses.length} Remaining`}
           </span>
