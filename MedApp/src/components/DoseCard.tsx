@@ -327,16 +327,21 @@ const styles = StyleSheet.create({
   },
   actionsContainer: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 10,
+    marginTop: 14,
+    alignItems: 'center',
   },
   actionBtnTake: {
-    flex: 2,
+    flex: 1.8,
   },
   actionBtnSnooze: {
-    flex: 1.5,
+    flex: 1.6,
   },
   actionBtnSkip: {
     flex: 1,
+    backgroundColor: THEME.colors.surfaceSubtle,
+    borderWidth: 1,
+    borderColor: THEME.colors.surfaceBorder,
   },
   skipPrompt: {
     fontSize: 14,

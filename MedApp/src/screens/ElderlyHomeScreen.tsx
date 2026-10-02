@@ -23,6 +23,7 @@ import { CustomLoader, CustomButton, CustomCard } from '../components/common';
 import { THEME } from '../constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types/navigation';
 
 export const ElderlyHomeScreen: React.FC = () => {
@@ -116,6 +117,8 @@ export const ElderlyHomeScreen: React.FC = () => {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   const pendingCount = doses.filter((d) => d.status === 'scheduled' || d.status === 'reminder_sent' || d.status === 'snoozed').length;
 
   if (isLoading) {
@@ -125,7 +128,7 @@ export const ElderlyHomeScreen: React.FC = () => {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={styles.contentContainer}
+      contentContainerStyle={[styles.contentContainer, { paddingTop: Math.max(insets.top + 8, 16) }]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[THEME.colors.primary]} />}
     >
       {/* Top App Bar */}
@@ -182,7 +185,7 @@ export const ElderlyHomeScreen: React.FC = () => {
       {/* Today's Summary Card */}
       <CustomCard variant="primary" style={styles.summaryCard}>
         <View style={styles.summaryContent}>
-          <View>
+          <View style={styles.summaryTextContainer}>
             <Text style={styles.summaryTitle}>Today's Schedule</Text>
             <Text style={styles.summarySubtitle}>
               {pendingCount === 0 ? 'All doses completed for today! 🎉' : `${pendingCount} remaining doses scheduled.`}
@@ -232,17 +235,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: THEME.spacing.lg,
+    paddingVertical: 4,
   },
   greeting: {
     ...THEME.typography.headerLarge,
-    fontSize: 24,
+    fontSize: 22,
+    color: THEME.colors.text,
   },
   userRoleTag: {
     ...THEME.typography.caption,
     color: THEME.colors.primary,
-    fontWeight: '700',
+    fontWeight: '800',
     marginTop: 2,
     textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   topBarActions: {
     flexDirection: 'row',
@@ -251,32 +257,42 @@ const styles = StyleSheet.create({
   },
   addMedBtn: {
     backgroundColor: THEME.colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
     borderRadius: THEME.radii.md,
+    shadowColor: THEME.colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
   addMedBtnText: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#ffffff',
   },
   historyBtn: {
     backgroundColor: THEME.colors.surface,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: THEME.colors.surfaceBorder,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: THEME.radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   historyBtnText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: THEME.colors.text,
+    fontSize: 16,
   },
   logoutBtn: {
     backgroundColor: THEME.colors.surfaceSubtle,
-    padding: 8,
+    borderWidth: 1.5,
+    borderColor: THEME.colors.surfaceBorder,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     borderRadius: THEME.radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logoutText: {
     fontSize: 16,
@@ -289,6 +305,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  summaryTextContainer: {
+    flex: 1,
+    marginRight: 12,
   },
   summaryTitle: {
     fontSize: 16,
