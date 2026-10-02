@@ -22,7 +22,21 @@ app.use(helmet());
 
 // Cross-Origin Resource Sharing
 app.use(cors({
-  origin: env.CLIENT_URL,
+  origin: (origin, callback) => {
+    // Mobile apps (React Native) or curl/Postman may send no origin header
+    if (!origin) return callback(null, true);
+    if (
+      origin === env.CLIENT_URL ||
+      origin === 'http://localhost:5173' ||
+      origin === 'http://localhost:8081' ||
+      origin.startsWith('http://localhost') ||
+      origin.startsWith('http://192.168.') ||
+      origin.startsWith('http://10.0.2.2')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true); // In development, allow all origins
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']

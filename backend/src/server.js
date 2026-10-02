@@ -16,8 +16,8 @@ const startServer = async () => {
       logger.error('Startup dose reconciliation warning', { error: err.message });
     });
 
-    server = app.listen(env.PORT, () => {
-      logger.info(`Elderly Medicine Reminder API running on port ${env.PORT} [${env.NODE_ENV}]`);
+    server = app.listen(env.PORT, '0.0.0.0', () => {
+      logger.info(`Elderly Medicine Reminder API running on port ${env.PORT} [${env.NODE_ENV}] (listening on 0.0.0.0)`);
     });
   } catch (error) {
     logger.error('Failed to start server due to database connection error', { error: error.message });

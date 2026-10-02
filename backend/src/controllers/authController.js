@@ -12,8 +12,9 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const result = await authService.authenticateUser(email, password);
+    const { email, emailOrPhone, identifier, password } = req.body;
+    const loginIdentifier = email || emailOrPhone || identifier;
+    const result = await authService.authenticateUser(loginIdentifier, password);
     return successResponse(res, 'Login successful', result, 200);
   } catch (err) {
     next(err);

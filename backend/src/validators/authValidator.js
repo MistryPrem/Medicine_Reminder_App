@@ -18,8 +18,12 @@ export const registerSchema = z.object({
 
 export const loginSchema = z.object({
   body: z.object({
-    email: z.string().email('Valid email address is required').trim().toLowerCase(),
+    email: z.string().trim().toLowerCase().optional(),
+    emailOrPhone: z.string().trim().toLowerCase().optional(),
+    identifier: z.string().trim().toLowerCase().optional(),
     password: z.string().min(1, 'Password is required')
+  }).refine((data) => data.email || data.emailOrPhone || data.identifier, {
+    message: 'Email address or phone number is required'
   })
 });
 

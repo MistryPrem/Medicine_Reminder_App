@@ -59,8 +59,11 @@ export const registerUser = async (userData) => {
   };
 };
 
-export const authenticateUser = async (email, password) => {
-  const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+export const authenticateUser = async (emailOrPhone, password) => {
+  const normalized = emailOrPhone.trim().toLowerCase();
+  const user = await User.findOne({
+    $or: [{ email: normalized }, { phoneNumber: normalized }]
+  }).select('+password');
 
   if (!user || !(await user.comparePassword(password))) {
     throw AppError.unauthorized('Invalid email or password credentials', ERROR_CODES.UNAUTHORIZED);
