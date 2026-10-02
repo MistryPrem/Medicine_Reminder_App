@@ -6,6 +6,8 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -118,6 +120,8 @@ export const ElderlyHomeScreen: React.FC = () => {
   };
 
   const insets = useSafeAreaInsets();
+  const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight || 28) : 0;
+  const safeTopPadding = Math.max(insets.top, statusBarHeight, 28) + 16;
 
   const pendingCount = doses.filter((d) => d.status === 'scheduled' || d.status === 'reminder_sent' || d.status === 'snoozed').length;
 
@@ -128,7 +132,7 @@ export const ElderlyHomeScreen: React.FC = () => {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.contentContainer, { paddingTop: Math.max(insets.top + 8, 16) }]}
+      contentContainerStyle={[styles.contentContainer, { paddingTop: safeTopPadding }]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[THEME.colors.primary]} />}
     >
       {/* Top App Bar */}

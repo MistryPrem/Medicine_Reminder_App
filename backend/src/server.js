@@ -16,6 +16,13 @@ const startServer = async () => {
       logger.error('Startup dose reconciliation warning', { error: err.message });
     });
 
+    // Run periodic dose reconciliation every 30 seconds to catch due doses and dispatch alerts
+    setInterval(() => {
+      reconcileDoses().catch((err) => {
+        logger.error('Periodic dose reconciliation warning', { error: err.message });
+      });
+    }, 30000);
+
     server = app.listen(env.PORT, '0.0.0.0', () => {
       logger.info(`Elderly Medicine Reminder API running on port ${env.PORT} [${env.NODE_ENV}] (listening on 0.0.0.0)`);
     });
