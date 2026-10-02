@@ -2,7 +2,9 @@ import axios, { InternalAxiosRequestConfig, AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-const DEFAULT_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:5000' : 'http://localhost:5000';
+// On physical Android devices connected via USB, 'adb reverse tcp:5000 tcp:5000' routes http://localhost:5000 directly.
+// For Android emulator, 10.0.2.2 is also supported.
+const DEFAULT_HOST = Platform.OS === 'android' ? 'http://localhost:5000' : 'http://localhost:5000';
 export const API_BASE_URL = `${DEFAULT_HOST}/api/v1`;
 
 export const api = axios.create({
