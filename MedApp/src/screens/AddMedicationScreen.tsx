@@ -26,7 +26,8 @@ const DOSAGE_UNITS = [
   { label: 'Capsule', value: 'capsule' as const },
   { label: 'mg (Milligrams)', value: 'mg' as const },
   { label: 'ml (Milliliters)', value: 'ml' as const },
-  { label: 'Drops', value: 'drop' as const },
+  { label: 'Drops', value: 'drops' as const },
+  { label: 'Puff', value: 'puff' as const },
   { label: 'Patch', value: 'patch' as const },
 ];
 
@@ -46,7 +47,7 @@ export const AddMedicationScreen: React.FC = () => {
   const [name, setName] = useState('');
   const [genericName, setGenericName] = useState('');
   const [dosage, setDosage] = useState('1');
-  const [dosageUnit, setDosageUnit] = useState<'tablet' | 'capsule' | 'mg' | 'ml' | 'drop' | 'patch'>('tablet');
+  const [dosageUnit, setDosageUnit] = useState<'tablet' | 'capsule' | 'mg' | 'ml' | 'drops' | 'puff' | 'patch'>('tablet');
   const [instructions, setInstructions] = useState('Take after breakfast');
   const [currentStock, setCurrentStock] = useState('30');
   const [refillThreshold, setRefillThreshold] = useState('7');
@@ -115,7 +116,12 @@ export const AddMedicationScreen: React.FC = () => {
       navigation.goBack();
     } catch (error: any) {
       console.error('Failed to create medication:', error);
-      const msg = error.response?.data?.message || 'Failed to save medication. Check backend connection.';
+      const details = error.response?.data?.details;
+      let detailedMsg = error.response?.data?.message;
+      if (Array.isArray(details) && details.length > 0) {
+        detailedMsg = `${detailedMsg}: ${details.map((d: any) => `${d.field ? `${d.field} - ` : ''}${d.message}`).join(', ')}`;
+      }
+      const msg = detailedMsg || error.message || 'Failed to save medication. Check backend connection.';
       showToast({ message: msg, type: 'error' });
     } finally {
       setIsSubmitting(false);

@@ -5,7 +5,7 @@ export interface CreateMedicationPayload {
   name: string;
   genericName?: string;
   dosage: string;
-  dosageUnit: 'mg' | 'ml' | 'tablet' | 'capsule' | 'drop' | 'patch';
+  dosageUnit: 'mg' | 'ml' | 'tablet' | 'capsule' | 'drops' | 'puff' | 'patch' | 'drop';
   instructions?: string;
   currentStock?: number;
   refillThreshold?: number;
