@@ -52,7 +52,11 @@ class AlarmMonitorService {
 
           // Vibrate device if vibration is enabled
           if (prefs.vibrate) {
-            Vibration.vibrate([0, 600, 300, 600, 300, 1000]);
+            try {
+              Vibration.vibrate([0, 600, 300, 600, 300, 1000]);
+            } catch (vibErr) {
+              console.warn('Vibration failed or permission not granted:', vibErr);
+            }
           }
 
           const payload: ActiveAlarmPayload = {
