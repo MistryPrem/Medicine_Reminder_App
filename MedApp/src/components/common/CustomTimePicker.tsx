@@ -53,9 +53,9 @@ export const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
   const [selectedMinute, setSelectedMinute] = useState<string>(initial.minute);
   const [selectedPeriod, setSelectedPeriod] = useState<'AM' | 'PM'>(initial.period);
 
-  const hourScrollRef = useRef<ScrollView>(null);
-  const minuteScrollRef = useRef<ScrollView>(null);
-  const periodScrollRef = useRef<ScrollView>(null);
+  const hourScrollRef = useRef<any>(null);
+  const minuteScrollRef = useRef<any>(null);
+  const periodScrollRef = useRef<any>(null);
 
   const openPicker = () => {
     const current = parseTime(value);
