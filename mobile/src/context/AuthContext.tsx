@@ -54,12 +54,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         emailOrPhone: trimmed,
         password
       });
-      const { user: loggedInUser, tokens } = response.data.data;
+      const resData = response.data.data;
+      const loggedInUser = resData.user;
+      const accessToken = resData.accessToken || resData.tokens?.accessToken;
+      const refreshToken = resData.refreshToken || resData.tokens?.refreshToken;
 
-      await setAuthTokens(tokens.accessToken, tokens.refreshToken);
+      if (!accessToken || !refreshToken) {
+        throw new Error('Authentication failed: Missing tokens in server response.');
+      }
+
+      await setAuthTokens(accessToken, refreshToken);
       await AsyncStorage.setItem('user', JSON.stringify(loggedInUser));
 
-      setToken(tokens.accessToken);
+      setToken(accessToken);
       setUser(loggedInUser);
 
       // If user is elderly, fetch their profile
