@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Alert,
   Vibration,
+  Platform,
 } from 'react-native';
+import notifee, { AndroidImportance, AndroidCategory, AndroidVisibility } from '@notifee/react-native';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { THEME } from '../constants/theme';
@@ -106,12 +108,44 @@ export const ProfileSettingsScreen: React.FC = () => {
     showToast({ message: `Default snooze set to ${mins} minutes`, type: 'success' });
   };
 
-  const handleTestAlarm = () => {
+  const handleTestAlarm = async () => {
     if (vibrate) {
-      Vibration.vibrate([0, 400, 200, 400]);
+      try {
+        Vibration.vibrate([0, 400, 200, 400]);
+      } catch (e) {
+        console.warn('Vibration test error:', e);
+      }
     }
+
+    try {
+      if (Platform.OS === 'android') {
+        await notifee.createChannel({
+          id: 'test_alarm_channel',
+          name: 'Test Alarm Channel',
+          importance: AndroidImportance.HIGH,
+          sound: 'default',
+          vibration: vibrate,
+        });
+      }
+
+      await notifee.displayNotification({
+        title: '🔔 Test Medication Alarm',
+        body: `Testing alarm sound [${ringtone.replace('_', ' ')}] with ${vibrate ? 'vibration' : 'no vibration'}.`,
+        android: {
+          channelId: 'test_alarm_channel',
+          importance: AndroidImportance.HIGH,
+          sound: alarmSoundEnabled ? 'default' : undefined,
+          category: AndroidCategory.ALARM,
+          visibility: AndroidVisibility.PUBLIC,
+          pressAction: { id: 'default' },
+        },
+      });
+    } catch (err) {
+      console.warn('Notifee test alarm sound error:', err);
+    }
+
     showToast({
-      message: `🔔 Test Alarm: Playing [${ringtone.replace('_', ' ')}] with ${vibrate ? 'vibration' : 'no vibration'}!`,
+      message: `🔔 Test Alarm: Triggered [${ringtone.replace('_', ' ')}] with ${vibrate ? 'vibration' : 'no vibration'}!`,
       type: 'info',
       duration: 3500,
     });
