@@ -77,10 +77,16 @@ export const AddMedicationScreen: React.FC = () => {
     }
 
     let scheduledTimes = [time1];
+    let backendFreq: 'once_daily' | 'multiple_daily' | 'specific_days' | 'interval' = 'once_daily';
+
     if (frequency === 'twice_daily') {
       scheduledTimes = [time1, time2];
+      backendFreq = 'multiple_daily';
     } else if (frequency === 'thrice_daily') {
       scheduledTimes = [time1, time3, time2];
+      backendFreq = 'multiple_daily';
+    } else if (frequency === 'weekly') {
+      backendFreq = 'specific_days';
     }
 
     try {
@@ -95,8 +101,9 @@ export const AddMedicationScreen: React.FC = () => {
         currentStock: parseInt(currentStock, 10) || 30,
         refillThreshold: parseInt(refillThreshold, 10) || 7,
         schedule: {
-          frequencyType: frequency === 'as_needed' ? 'as_needed' : frequency,
+          frequencyType: backendFreq,
           scheduledTimes,
+          daysOfWeek: frequency === 'weekly' ? [new Date().getDay()] : undefined,
           startDate: startDate.toISOString().split('T')[0],
           alarmSound: 'gentle_bell',
           isAlarmEnabled: true,

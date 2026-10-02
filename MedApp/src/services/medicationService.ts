@@ -12,7 +12,7 @@ export interface CreateMedicationPayload {
   pillsPerDose?: number;
   colorCode?: string;
   schedule: {
-    frequencyType: 'daily' | 'twice_daily' | 'thrice_daily' | 'weekly' | 'custom' | 'as_needed';
+    frequencyType: 'once_daily' | 'multiple_daily' | 'specific_days' | 'interval';
     scheduledTimes: string[]; // e.g. ["08:00", "20:00"]
     daysOfWeek?: number[];
     startDate?: string;
