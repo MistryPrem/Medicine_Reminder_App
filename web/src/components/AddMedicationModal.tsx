@@ -253,7 +253,7 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
             </div>
           </div>
 
-          <div className="form-row" style={{ marginTop: '16px' }}>
+          <div className="form-row">
             <div className="form-group">
               <label>Alarm Sound</label>
               <select
@@ -276,13 +276,13 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
                 max="100"
                 value={alarmVolume}
                 onChange={(e) => setAlarmVolume(Number(e.target.value))}
-                style={{ width: '100%', marginTop: '8px' }}
+                className="volume-slider"
               />
             </div>
           </div>
 
-          <div className="form-row" style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '16px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
+          <div className="alarm-toggles-row">
+            <label className="checkbox-toggle-label">
               <input
                 type="checkbox"
                 checked={vibrate}
@@ -290,7 +290,7 @@ export const AddMedicationModal: React.FC<AddMedicationModalProps> = ({
               />
               <span>Vibrate on Alarm</span>
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0 }}>
+            <label className="checkbox-toggle-label">
               <input
                 type="checkbox"
                 checked={isAlarmEnabled}

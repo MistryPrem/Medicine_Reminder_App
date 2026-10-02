@@ -795,17 +795,17 @@ input:focus, select:focus, textarea:focus {
   border-radius: var(--radius-sm);
 }
 
-/* Modals */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   z-index: 50;
   backdrop-filter: blur(4px);
+  overflow-y: auto;
 }
 
 .modal-box {
@@ -813,20 +813,52 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 24px;
-  max-width: 480px;
+  max-width: 520px;
   width: 100%;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-lg);
+  position: relative;
 }
 
 .modal-large {
-  max-width: 640px;
+  max-width: 680px;
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.med-form {
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-right: -4px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom slick scrollbar for modal */
+.med-form::-webkit-scrollbar,
+.modal-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.med-form::-webkit-scrollbar-thumb,
+.modal-box::-webkit-scrollbar-thumb {
+  background-color: var(--border-subtle);
+  border-radius: 4px;
+}
+
+.med-form::-webkit-scrollbar-thumb:hover,
+.modal-box::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
 }
 
 .modal-header h2 {
@@ -848,7 +880,10 @@ input:focus, select:focus, textarea:focus {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .btn-cancel {
@@ -857,6 +892,10 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
   padding: 10px 18px;
   border-radius: var(--radius-sm);
+}
+
+.btn-cancel:hover {
+  background-color: var(--bg-surface-hover);
 }
 
 /* Form Styles */
@@ -905,6 +944,43 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   gap: 6px;
   padding: 6px 0;
+}
+
+.volume-slider {
+  width: 100%;
+  accent-color: var(--primary);
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.alarm-toggles-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.checkbox-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.checkbox-toggle-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
 }
 
 /* Auth Pages */
@@ -1555,15 +1631,50 @@ input:focus, select:focus, textarea:focus {
   .modal-box {
     width: 95% !important;
     max-width: 95% !important;
-    margin: 12px;
-    padding: 20px 16px;
-    max-height: 90vh;
+    margin: 8px auto;
+    padding: 18px 14px;
+    max-height: calc(100vh - 24px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .med-form {
     overflow-y: auto;
+    flex: 1;
+    padding-right: 4px;
+  }
+
+  .modal-actions {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    gap: 8px;
+  }
+
+  .modal-actions .btn-cancel,
+  .modal-actions .btn-primary {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+    text-align: center;
+    justify-content: center;
   }
 
   .form-row {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .time-input-row {
@@ -1573,7 +1684,14 @@ input:focus, select:focus, textarea:focus {
 
   .time-input-row input[type="time"] {
     flex: 1;
-    min-width: 140px;
+    min-width: 130px;
+  }
+
+  .alarm-toggles-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
   }
 
   /* Senior Selector Bar */
